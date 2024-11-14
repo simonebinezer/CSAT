@@ -1,0 +1,48 @@
+pipeline {
+    agent any
+
+    environment {
+        SONARQUBE_SCANNER_HOME = tool name: 'SonarScanner' // Replace 'SonarScanner' with your configured scanner name
+        SONAR_PROJECT_KEY = 'CSAT'
+        GITHUB_REPO = 'https://github.com/simonebinezer/CSAT'
+        SONAR_HOST_URL = 'http://localhost:9099' // Replace with your SonarQube server address
+        SONAR_LOGIN = credentials('sonarqube') // Store your SonarQube token in Jenkins credentials
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main', url: 'https://github.com/simonebinezer/CSAT.git'  // Replace with your GitHub repo and branch
+            }
+        }
+
+        stage('Setup PHP Environment') {
+            steps {
+                // Check PHP version, or install it as needed
+                sh 'php --version || sudo apt-get install php -y'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('Sonar_Qube') {
+                    // If sonar-project.properties is present, SonarQube will use it.
+                    sh "${SONARQUBE_SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.sources=application -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_LOGIN}"
+                }
+            }
+        }
+
+        stage("Quality Gate") {
+            steps {
+                timeout(time: 1, unit: 'MINUTES') {
+                    script {
+                        def qg = waitForQualityGate()
+                        if (qg.status != 'OK') {
+                            error "Pipeline failed due to quality gate failure: ${qg.status}"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
