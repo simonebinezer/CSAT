@@ -17,11 +17,11 @@ pipeline {
         }
 
         stage('Setup PHP Environment') {
-            steps {
-                // Check PHP version, or install it as needed
-                bat 'php --version || sudo apt-get install php -y'
-            }
-        }
+    steps {
+        bat 'php --version || echo "Please ensure PHP is installed and in the system PATH"'
+    }
+}
+
 
         stage('SonarQube Analysis') {
             steps {
