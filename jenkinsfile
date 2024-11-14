@@ -6,7 +6,7 @@ pipeline {
         SONAR_PROJECT_KEY = 'CSAT'
         GITHUB_REPO = 'https://github.com/simonebinezer/CSAT'
         SONAR_HOST_URL = 'http://localhost:9099' // Replace with your SonarQube server address
-        SONAR_TOKEN = credentials('Sonar_Csat') // Store your SonarQube token in Jenkins credentials
+        SONAR_TOKEN = credentials('sonar-token') // Store your SonarQube token in Jenkins credentials
     }
 
     stages {
@@ -31,9 +31,10 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    // If sonar-project.properties is present, SonarQube will use it.
-                    bat "sonar-scanner -Dsonar.login=${SONAR_TOKEN}"
+                withSonarQubeEnv('SonarQube') { // SonarQube config name
+                    withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                        bat 'sonar-scanner -Dsonar.login=%SONAR_TOKEN%'
+                    }
                 }
             }
         }
