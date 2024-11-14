@@ -4,8 +4,8 @@ pipeline {
     environment {
         SONARQUBE_SCANNER_HOME = tool name: 'SonarScanner' // Replace 'SonarScanner' with your configured scanner name
         SONAR_PROJECT_KEY = 'CSAT'
-        GITHUB_REPO = 'https://github.com/simonebinezer/YourRepo.git'
-        SONAR_HOST_URL = 'http://<SonarQube_Server_IP>:9000' // Replace with your SonarQube server address
+        GITHUB_REPO = 'https://github.com/simonebinezer/CSAT'
+        SONAR_HOST_URL = 'http://localhost:9099' // Replace with your SonarQube server address
         SONAR_LOGIN = credentials('SonarQube_Token') // Store your SonarQube token in Jenkins credentials
     }
 
