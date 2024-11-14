@@ -17,10 +17,16 @@ pipeline {
         }
 
         stage('Setup PHP Environment') {
-    steps {
-        bat 'php --version || echo "Please ensure PHP is installed and in the system PATH"'
-    }
-}
+            steps {
+                script {
+                    if (isUnix()) {
+                        sh 'php --version || sudo apt-get install php -y'
+                    } else {
+                        bat 'php --version || echo "Please install PHP on your Windows machine and add it to PATH"'
+                    }
+                }
+            }
+        }
 
 
         stage('SonarQube Analysis') {
