@@ -1,0 +1,9 @@
+2024-01-29 08:10:43 - Process started
+2024-01-29 08:10:43 - database connected
+2024-01-29 08:11:08 - Success count: 3, failure count: 0
+2024-01-29 08:11:08 - Data removed from table for successfull List
+2024-01-29 08:11:08 - Process completed
+2024-01-29 08:56:32 - Process started
+2024-01-29 08:56:32 - database connected
+2024-01-29 08:56:57 - Success count: 3, failure count: 0
+2024-01-29 08:56:57 - Process completed
