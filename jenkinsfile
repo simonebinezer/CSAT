@@ -19,7 +19,7 @@ pipeline {
         stage('Setup PHP Environment') {
             steps {
                 // Check PHP version, or install it as needed
-                sh 'php --version || sudo apt-get install php -y'
+                bat 'php --version || sudo apt-get install php -y'
             }
         }
 
