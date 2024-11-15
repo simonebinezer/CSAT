@@ -8,8 +8,8 @@ pipeline {
         SONAR_HOST_URL = 'http://localhost:9099' // Replace with your SonarQube server address
         SONAR_TOKEN = credentials('sonar-token') // Store your SonarQube token in Jenkins credentials
     }
-
-    stages {
+     
+     stages {
         stage('Clone Repository') {
             steps {
                 git branch: 'main', url: 'https://github.com/simonebinezer/CSAT.git'  // Replace with your GitHub repo and branch
@@ -28,8 +28,6 @@ pipeline {
             }
         }
 
-
-        stages {
             stage("Build & SonarQube Analysis") {
             steps {
             withSonarQubeEnv('SonarQube') {
@@ -39,7 +37,6 @@ pipeline {
                 }
             }
         }
-      }
 
         stage("Quality Gate") {
             steps {
