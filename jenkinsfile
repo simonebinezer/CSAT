@@ -29,15 +29,17 @@ pipeline {
         }
 
 
-        stage('SonarQube Analysis') {
+        stages {
+            stage("Build & SonarQube Analysis") {
             steps {
-                withSonarQubeEnv('SonarQube') { // SonarQube config name
+            withSonarQubeEnv('SonarQube') {
                     withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                         bat 'sonar-scanner -Dsonar.login=%SONAR_TOKEN%'
                     }
                 }
             }
         }
+      }
 
         stage("Quality Gate") {
             steps {
