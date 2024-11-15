@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         SONARQUBE_SCANNER_HOME = tool name: 'SonarScanner' // Replace 'SonarScanner' with your configured scanner name
-        SONAR_PROJECT_KEY = 'CSAT'
+        SONAR_PROJECT_KEY = 'CSAT_Project'
         GITHUB_REPO = 'https://github.com/simonebinezer/CSAT'
         SONAR_HOST_URL = 'http://localhost:9099' // Replace with your SonarQube server address
         SONAR_TOKEN = credentials('sonar-token') // Store your SonarQube token in Jenkins credentials
@@ -31,12 +31,10 @@ pipeline {
             stage("Build & SonarQube Analysis") {
             steps {
             withSonarQubeEnv('SonarQube') {
-                    withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                        bat 'sonar-scanner -Dsonar.login=%SONAR_TOKEN%'
+                bat 'sonar-scanner -Dsonar.projectKey="CSAT_Project" -Dsonar.login=****'
+                      }
                     }
                 }
-            }
-        }
 
         stage("Quality Gate") {
             steps {
