@@ -6,7 +6,7 @@ pipeline {
         SONAR_PROJECT_KEY = 'CSAT_Project'
         GITHUB_REPO = 'https://github.com/simonebinezer/CSAT'
         SONAR_HOST_URL = 'http://localhost:9099' // Replace with your SonarQube server address
-        SONAR_TOKEN = credentials('SonarQube_jenkins') // Store your SonarQube token in Jenkins credentials
+        SONAR_TOKEN = credentials('CSAT_Project') // Store your SonarQube token in Jenkins credentials
     }
      
      stages {
@@ -33,7 +33,7 @@ pipeline {
             withSonarQubeEnv('SonarQube') {
     bat '''
         sonar-scanner -Dsonar.projectKey="CSAT_Project" \
-                      -Dsonar.projectName="CSAT" \
+                      -Dsonar.projectName="CSAT_Project" \
                       -Dsonar.projectVersion="1.0" \
                       -Dsonar.login=****
     '''
