@@ -31,10 +31,15 @@ pipeline {
             stage("Build & SonarQube Analysis") {
             steps {
             withSonarQubeEnv('SonarQube') {
-                bat 'sonar-scanner -Dsonar.projectKey="CSAT_Project" -Dsonar.login=****'
-                      }
-                    }
-                }
+    bat '''
+        sonar-scanner -Dsonar.projectKey="CSAT_Project" \
+                      -Dsonar.projectName="CSAT" \
+                      -Dsonar.projectVersion="1.0" \
+                      -Dsonar.login=****
+    '''
+   }
+ }
+}
 
         stage("Quality Gate") {
             steps {
