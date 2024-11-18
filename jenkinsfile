@@ -2,23 +2,25 @@ pipeline {
     agent any
 
     environment {
-        SONARQUBE_SCANNER_HOME = tool name: 'SonarScanner' // Replace 'SonarScanner' with your configured scanner name
-        SONAR_PROJECT_KEY = 'CSAT_Project'
+        SONARQUBE_SCANNER_HOME = tool name: 'SonarScanner' // Matches the configured scanner tool in Jenkins
+        SONAR_PROJECT_KEY = 'CSAT_Project'                // Unique identifier for the project
         GITHUB_REPO = 'https://github.com/simonebinezer/CSAT'
-        SONAR_HOST_URL = 'http://localhost:9099' // Replace with your SonarQube server address
-        SONAR_TOKEN = credentials('CSAT_Project') // Store your SonarQube token in Jenkins credentials
+        SONAR_HOST_URL = 'http://localhost:9099'          // SonarQube server address
+        SONAR_TOKEN = credentials('CSAT_Project')         // Jenkins credentials storing the SonarQube token
     }
-     
-     stages {
+
+    stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/simonebinezer/CSAT.git'  // Replace with your GitHub repo and branch
+                echo "Cloning the GitHub repository..."
+                git branch: 'main', url: "${https://github.com/simonebinezer/CSAT.git}"  // Replace with your GitHub repo and branch
             }
         }
 
         stage('Setup PHP Environment') {
             steps {
                 script {
+                    echo "Setting up PHP environment..."
                     if (isUnix()) {
                         sh 'php --version || sudo apt-get install php -y'
                     } else {
@@ -28,23 +30,27 @@ pipeline {
             }
         }
 
-            stage("Build & SonarQube Analysis") {
+        stage('Build & SonarQube Analysis') {
             steps {
-            withSonarQubeEnv('SonarQube') {
-    bat '''
-        sonar-scanner -Dsonar.projectKey="CSATProject" \
-                      -Dsonar.projectName="CSAT_Project" \
-                      -Dsonar.projectVersion="1.0" \
-                      -Dsonar.login=****
-    '''
-   }
- }
-}
+                withSonarQubeEnv('SonarQube') { // Matches the SonarQube instance name in Jenkins
+                    echo "Starting SonarQube analysis..."
+                    bat """
+                        sonar-scanner -Dsonar.projectKey="${SONAR_PROJECT_KEY}" \
+                                      -Dsonar.projectName="CSAT_Project" \
+                                      -Dsonar.projectVersion="1.0" \
+                                      -Dsonar.sources=. \
+                                      -Dsonar.host.url="${SONAR_HOST_URL}" \
+                                      -Dsonar.login=${SONAR_TOKEN}
+                    """
+                }
+            }
+        }
 
-        stage("Quality Gate") {
+        stage('Quality Gate') {
             steps {
                 timeout(time: 1, unit: 'MINUTES') {
                     script {
+                        echo "Checking SonarQube Quality Gate status..."
                         def qg = waitForQualityGate()
                         if (qg.status != 'OK') {
                             error "Pipeline failed due to quality gate failure: ${qg.status}"
